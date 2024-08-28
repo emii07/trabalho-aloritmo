@@ -11,16 +11,16 @@ public class Player : MonoBehaviour
     public int velocidade = 10;
     private Rigidbody rb;
     public int forcaPulo = 10;
-    public bool noChao = false
-            ;
+    public bool noChao = true;
+
     void Start()
     {
         TryGetComponent(out rb);
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (Collision.gameObject.tag == "chão")
+        if (!noChao && collision.gameObject.tag == "Chao")
         {
             noChao = true;
         }
@@ -30,21 +30,22 @@ public class Player : MonoBehaviour
     {
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-        Vector3 direcao = new Vector3(h, 0, v);
+        UnityEngine.Vector3 direcao = new Vector3(h, 0, v);
         rb.AddForce(direcao * velocidade * Time.deltaTime, ForceMode.Impulse);
-        if (Input.GetKeyDown(KeyCode.Space) && noChao) //PULO
+        
+        if (Input.GetKeyDown(KeyCode.Space) &&  noChao == true)
         {
-            rb.AddForce(Vector3.up * forcaPulo,ForceMode.Impulse);
+            rb.AddForce(Vector3.up * forcaPulo, ForceMode.Impulse);
+            noChao = false;
         }
-               
         
-        
-        
+
+
         if (transform.position.y < -5)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         
-        
-}
+
+    }
 }
